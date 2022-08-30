@@ -11,6 +11,30 @@
       "url": "https://codelists.opensafely.org/codelist/nhsd-primary-care-domain-refsets/tia_cod/20201016/",
       "downloaded_at": "2022-08-22 08:09:44.446893Z",
       "sha": "4b8ccd245bf8acdde3ffb55392dc6ae5d3ce4a22"
+    },
+    "opensafely-ethnicity-snomed-0removed.csv": {
+      "id": "opensafely/ethnicity-snomed-0removed/2e641f61",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/ethnicity-snomed-0removed/2e641f61/",
+      "downloaded_at": "2022-08-30 12:11:09.802117Z",
+      "sha": "8b849b5b785d80306e488d0109640c8c1d2da01b"
+    },
+    "opensafely-direct-acting-oral-anticoagulants-doac.csv": {
+      "id": "opensafely/direct-acting-oral-anticoagulants-doac/2020-10-05",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/direct-acting-oral-anticoagulants-doac/2020-10-05/",
+      "downloaded_at": "2022-08-30 17:10:23.170254Z",
+      "sha": "50f69d9c0bcb0e58aadb76fb4749d33f74f66253"
+    },
+    "opensafely-systolic-blood-pressure-qof.csv": {
+      "id": "opensafely/systolic-blood-pressure-qof/3572b5fb",
+      "url": "https://codelists.opensafely.org/codelist/opensafely/systolic-blood-pressure-qof/3572b5fb/",
+      "downloaded_at": "2022-08-30 20:53:17.428647Z",
+      "sha": "f2bc461e351499f4e5573a6f94e760b99979491e"
+    },
+    "user-milanwiedemann-diastolic-blood-pressure-qof.csv": {
+      "id": "user/milanwiedemann/diastolic-blood-pressure-qof/697e3433",
+      "url": "https://codelists.opensafely.org/codelist/user/milanwiedemann/diastolic-blood-pressure-qof/697e3433/",
+      "downloaded_at": "2022-08-30 20:53:17.661286Z",
+      "sha": "19b8b5a7ecdf9f11da301750bc1d76c72228839d"
     }
   }
 }
