@@ -1,9 +1,20 @@
+#############################################################################################
+# TO DO
+############################################################################################
+# AIM: investigate the rate of people on the stroke QOF register over time
+#
+# variables: sex, ethnicity, location (NHS region), IMD, carehome (binary?), 
+#            learning disability (binary?), sicklecell anemia
+# population age: Brian suggested 20+; I have been working with 18+ because adult
+
+
 from cohortextractor import StudyDefinition, patients, Measure
 
 # codelists in a separate file - read them in
 from codelist import *
 
-# why is there an error when this is inside StudyDefinition?
+
+# do I need these dates here? How do they relate to what is in the project yaml?
 start_date = "2019-03-01"
 end_date = "2020-03-01"
 
@@ -33,12 +44,60 @@ study = StudyDefinition(
             "int": {"distribution": "population_ages"}
         }
     ),
-
+    # defining sex
     sex=patients.sex(
         return_expectations={
             "rate": "universal",
             "category": {"ratios": {"M": 0.5, "F": 0.5}},
         }
+    ),
+    
+    # define region - unsure how to find NHS region
+    region=patients.registered_practice_as_of(
+        date="index_date",
+        returning="nuts1_region_name",
+        return_expectations={
+            "rate": "universal",
+            "category": {
+                "ratios": {
+                    "North East": 0.1,
+                    "North West": 0.1,
+                    "Yorkshire and The Humber": 0.1,
+                    "East Midlands": 0.1,
+                    "West Midlands": 0.1,
+                    "East": 0.1,
+                    "London": 0.2,
+                    "South East": 0.1,
+                    "South West": 0.1,
+                },
+            },
+        }
+    )
+
+    eth=patients.with_these_clinical_events(
+        ethnicity_codes,
+        returning="category",
+        find_last_match_in_period=True,
+        include_date_of_match=False,
+        return_expectations={
+            "category": {"ratios": {"1": 0.2, "2": 0.2, "3": 0.2, "4": 0.2, "5": 0.2}},
+            "incidence": 0.75,
+        },
+    ),
+
+    ethnicity=patients.categorised_as(
+        {
+            "Unknown": "DEFAULT",
+            "White": "eth='1' ",
+            "Mixed": "eth='2' ",
+            "South Asian": "eth='3' ",
+            "Black": "eth='4' ",
+            "Other": "eth='5' ",
+        },
+        return_expectations={
+            "category": {"ratios": {"White": 0.2, "Mixed": 0.2, "South Asian": 0.2, "Black": 0.2, "Other": 0.2}},
+            "incidence": 0.4,
+        },
     ),
 
     gms_registration_status=patients.satisfying(
@@ -88,93 +147,47 @@ study = StudyDefinition(
             return_expectations={"incidence": 0.9}
     ),
 
-    stroke=patients.satisfying(
+    systolic_bp=patients.with_these_clinical_events(
+            systolic_bp_codes,
+            between=["index_date - 1 year", "index_date"],
+            returning="numeric_value",
+            find_last_match_in_period=True,
+    )
+
+    diastolic_bp=patients.with_these_clinical_events(
+            diastolic_bp_codes,
+            between=["index_date - 1 year", "index_date"],
+            returning="numeric_value",
+            find_last_match_in_period=True,
+    )
+# looking at STIA011
+    bp=patients.satifying(
         """
-        had_stroke AND
-        age >= 40
+        systolic_bp <= 150 AND
+        diastolic_bp <= 90
         """
-    ),
+    )
+
+    # example of defining a variable by combining other variables
+    # stroke=patients.satisfying(
+    #     """
+    #     had_stroke AND
+    #     age >= 40
+    #     """
+    # ),
 )
 
 measures=[
     Measure(
-        id="stroke_rate",
-        numerator="stroke",
-        denominator="population",
-        group_by=["population"],
-    ),
-    Measure(
-        id="stroke_frequency2",
+        id="stroke_frequency_by_sex",
         numerator="stroke_occurred",
         denominator="population",
         group_by=["sex"],
+    ),    
+    Measure(
+        id="stroke_frequency_by_sex",
+        numerator="stroke_occurred",
+        denominator="population",
+        group_by=["region"],
     ),
 ]
-
-
-# # Create default measures
-# measures = [
-#     Measure(
-#         id="ast_reg_population_rate",
-#         numerator="asthma",
-#         denominator="population",
-#         group_by=["population"],
-#         small_number_suppression=True,
-#     ),
-#     Measure(
-#         id="ast_reg_practice_rate",
-#         numerator="asthma",
-#         denominator="population",
-#         group_by=["practice"],
-#         small_number_suppression=True,
-#     ),
-#     Measure(
-#         id="ast_reg_age_rate",
-#         numerator="asthma",
-#         denominator="population",
-#         group_by=["age_band"],
-#         small_number_suppression=True,
-#     ),
-#     Measure(
-#         id="ast_reg_sex_rate",
-#         numerator="asthma",
-#         denominator="population",
-#         group_by=["sex"],
-#         small_number_suppression=True,
-#     ),
-#     Measure(
-#         id="ast_reg_imd_rate",
-#         numerator="asthma",
-#         denominator="population",
-#         group_by=["imd"],
-#         small_number_suppression=True,
-#     ),
-#     Measure(
-#         id="ast_reg_region_rate",
-#         numerator="asthma",
-#         denominator="population",
-#         group_by=["region"],
-#         small_number_suppression=True,
-#     ),
-#     Measure(
-#         id="ast_reg_ethnicity_rate",
-#         numerator="asthma",
-#         denominator="population",
-#         group_by=["ethnicity"],
-#         small_number_suppression=True,
-#     ),
-#     Measure(
-#         id="ast_reg_learning_disability_rate",
-#         numerator="asthma",
-#         denominator="population",
-#         group_by=["learning_disability"],
-#         small_number_suppression=True,
-#     ),
-#     Measure(
-#         id="ast_reg_care_home_rate",
-#         numerator="asthma",
-#         denominator="population",
-#         group_by=["care_home"],
-#         small_number_suppression=True,
-#     ),
-# ]

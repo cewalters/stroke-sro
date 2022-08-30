@@ -10,7 +10,6 @@ actions:
      generate_cohort
      --study-definition study_definition
      --index-date-range "2019-03-01 to 2020-01-01 by month"
-     --output-dir=output/indicators  
      --output-format=csv
     outputs:
       highly_sensitive:
@@ -21,7 +20,7 @@ actions:
      cohortextractor:latest 
      generate_measures 
      --study-definition study_definition
-     --output-dir=output
+     --output-dir=output/measures
     needs: [generate_study_population]
     outputs:
       moderately_sensitive:
