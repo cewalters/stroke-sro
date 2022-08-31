@@ -20,7 +20,7 @@ actions:
      cohortextractor:latest 
      generate_measures 
      --study-definition study_definition
-     --output-dir=output/measures
+     --output-dir=output
     needs: [generate_study_population]
     outputs:
       moderately_sensitive:

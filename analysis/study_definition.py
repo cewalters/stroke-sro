@@ -72,7 +72,7 @@ study = StudyDefinition(
                 },
             },
         }
-    )
+    ),
 
     eth=patients.with_these_clinical_events(
         ethnicity_codes,
@@ -152,21 +152,24 @@ study = StudyDefinition(
             between=["index_date - 1 year", "index_date"],
             returning="numeric_value",
             find_last_match_in_period=True,
-    )
+            return_expectations={
+                "incidence": 0.9
+                }
+    ),
 
-    diastolic_bp=patients.with_these_clinical_events(
-            diastolic_bp_codes,
-            between=["index_date - 1 year", "index_date"],
-            returning="numeric_value",
-            find_last_match_in_period=True,
-    )
-# looking at STIA011
-    bp=patients.satifying(
-        """
-        systolic_bp <= 150 AND
-        diastolic_bp <= 90
-        """
-    )
+#     diastolic_bp=patients.with_these_clinical_events(
+#             diastolic_bp_codes,
+#             between=["index_date - 1 year", "index_date"],
+#             returning="numeric_value",
+#             find_last_match_in_period=True,
+#     ),
+# # looking at STIA011
+#     bp=patients.satisfying(
+#         """
+#         systolic_bp <= 150 AND
+#         diastolic_bp <= 90
+#         """
+#     ),
 
     # example of defining a variable by combining other variables
     # stroke=patients.satisfying(
