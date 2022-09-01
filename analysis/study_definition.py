@@ -87,15 +87,23 @@ study = StudyDefinition(
 
     ethnicity=patients.categorised_as(
         {
-            "Unknown": "DEFAULT",
             "White": "eth='1' ",
             "Mixed": "eth='2' ",
-            "South Asian": "eth='3' ",
-            "Black": "eth='4' ",
-            "Other": "eth='5' ",
+            "Asian or Asian British": "eth='3' ",
+            "Black or Black British": "eth='4' ",
+            "Chinese or Other Ethnic Group": "eth='5' ",
+            "Not stated": "eth='6' ",
         },
         return_expectations={
-            "category": {"ratios": {"White": 0.2, "Mixed": 0.2, "South Asian": 0.2, "Black": 0.2, "Other": 0.2}},
+            "category": {"ratios": {
+                "White": 0.2, 
+            "Mixed": 0.2, 
+            "Asian or Asian British": 0.2, 
+            "Black or Black British": 0.2, 
+            "Chinese or Other Ethnic Group": 0.1,
+            "Not stated": 0.1
+            }
+            },
             "incidence": 0.4,
         },
     ),
@@ -147,15 +155,16 @@ study = StudyDefinition(
             return_expectations={"incidence": 0.9}
     ),
 
-    systolic_bp=patients.with_these_clinical_events(
-            systolic_bp_codes,
-            between=["index_date - 1 year", "index_date"],
-            returning="numeric_value",
-            find_last_match_in_period=True,
-            return_expectations={
-                "incidence": 0.9
-                }
-    ),
+    # systolic_bp=patients.with_these_clinical_events(
+    #         systolic_bp_codes,
+    #         between=["index_date - 1 year", "index_date"],
+    #         returning="numeric_value",
+    #         find_last_match_in_period=True,
+    #         return_expectations={
+    #             "incidence": 0.9,
+    #             "float": {"distribution": "normal", "mean": 110, "stddev": 20}
+    #             }
+    # ),
 
 #     diastolic_bp=patients.with_these_clinical_events(
 #             diastolic_bp_codes,
