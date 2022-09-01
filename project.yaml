@@ -5,8 +5,46 @@ expectations:
 
 actions:
 
-  generate_study_population:
-    run: cohortextractor:latest generate_cohort --study-definition study_definition
+  # Generate ethnicity study population
+  generate_study_population_ethnicity:
+    run: > 
+      cohortextractor:latest generate_cohort 
+      --study-definition study_definition_ethnicity 
+      --output-dir=output
+      --output-format=csv
     outputs:
       highly_sensitive:
-        cohort: output/input.csv
+        cohort: output/input_ethnicity.csv
+
+  # Stroke and transient ischaemic attack
+  generate_study_population_stia_reg:
+    run: > 
+      cohortextractor:latest generate_cohort 
+      --study-definition study_definition_stia_reg 
+      --index-date-range "2021-04-01 to 2022-03-01 by month" 
+      --output-dir=output
+      --output-format=csv
+    outputs:
+      highly_sensitive:
+        cohort: output/input_stia_reg*.csv
+  
+  join_ethnicity_stia:
+    run: >
+      cohort-joiner:v0.0.12 
+        --lhs output/input_stia*.csv
+        --rhs output/input_ethnicity.csv
+        --output-dir output/joined
+    needs: [generate_study_population_ethnicity, generate_study_population_stia_reg]
+    outputs:
+      highly_sensitive:
+        cohort: output/joined/input_stia*.csv
+
+  generate_measures_stia_reg:
+     run: >
+       cohortextractor:latest generate_measures 
+       --study-definition study_definition_stia_reg 
+       --output-dir=output/joined
+     needs: [join_ethnicity_stia]
+     outputs:
+       moderately_sensitive:
+         measure_csv: output/joined/measure_stia_reg_*_rate.csv
